@@ -1,0 +1,28 @@
+{
+  "$schema": "../node_modules/@companion-module/base/assets/manifest.schema.json",
+  "type": "connection",
+  "id": "animatem",
+  "name": "animatem",
+  "shortname": "animATEM",
+  "description": "Control animATEM \u2014 cut, auto and fade-to-black per M/E, program/preview and aux source selection from live input names, SuperSource/DVE memory recall and animation, with program and preview tally.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": "git+https://github.com/stoatworks-labs/companion-module-animatem.git",
+  "bugs": "https://github.com/stoatworks-labs/companion-module-animatem/issues",
+  "maintainers": [
+    {
+      "name": "Allan Sargeant",
+      "email": ""
+    }
+  ],
+  "runtime": {
+    "type": "node22",
+    "api": "nodejs-ipc",
+    "apiVersion": "0.0.0",
+    "entrypoint": "../dist/main.js"
+  },
+  "legacyIds": [],
+  "manufacturer": "Stoatworks Labs",
+  "products": ["animATEM"],
+  "keywords": ["atem", "blackmagic", "switcher", "supersource", "dve"]
+}
