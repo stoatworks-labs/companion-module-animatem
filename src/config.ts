@@ -1,5 +1,7 @@
 import { Regex, type SomeCompanionConfigField } from '@companion-module/base'
 
+import { aboutField } from './about-field.js'
+
 export type ModuleConfig = {
   host: string
   port: number
@@ -23,6 +25,9 @@ export function GetConfigFields(): SomeCompanionConfigField[] {
       min: 1,
       max: 65535,
       default: 51234
-    }
+    },
+    // Vendored from stoatworks-backend/about. A Companion module has no UI of
+    // its own, so this config panel is the only surface it has.
+    aboutField()
   ]
 }
