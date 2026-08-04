@@ -89,6 +89,10 @@ Install via **Settings → Developer modules path** — this is not in the offic
 Companion module store. **Run `npm run build` first**: the manifest's entrypoint
 is `../dist/main.js`, and a source-only checkout will not load.
 
+<!-- attributions:start -->
+This project is built on other people's work — see [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+<!-- attributions:end -->
+
 ## Licence
 
 MIT — see [LICENSE](LICENSE).
