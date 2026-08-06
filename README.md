@@ -12,6 +12,21 @@ memory recall, with program and preview tally.
 
 TypeScript, built against `@companion-module/base` v2.
 
+<!-- downloads:start -->
+
+## Download
+
+**[v1.0.0](https://github.com/stoatworks-labs/companion-module-animatem/releases/tag/v1.0.0)**
+
+This release contains:
+
+- [`animatem-1.0.0.tgz`](https://github.com/stoatworks-labs/companion-module-animatem/releases/download/v1.0.0/animatem-1.0.0.tgz) — npm package, 22 KB
+- [`companion-module-animatem-pkg.tgz`](https://github.com/stoatworks-labs/companion-module-animatem/releases/latest/download/companion-module-animatem-pkg.tgz) — npm package, 23 KB
+
+All builds, checksums and release notes: [github.com/stoatworks-labs/companion-module-animatem/releases](https://github.com/stoatworks-labs/companion-module-animatem/releases).
+
+<!-- downloads:end -->
+
 ## What it does
 
 - **Actions** — cut, auto, fade to black and take-preview-to-program per M/E;
