@@ -1,5 +1,10 @@
 import { Regex, type SomeCompanionConfigField } from '@companion-module/base'
 
+// about-field really is .js — vendored from stoatworks-backend and typed by
+// about-field.d.ts beside it. eslint-plugin-n rewrites a .js specifier in a TS
+// file to .ts before resolving, so it looks for about-field.ts and misses both
+// real files. tsc and esbuild both resolve it fine.
+// eslint-disable-next-line n/no-missing-import
 import { aboutField } from './about-field.js'
 
 export type ModuleConfig = {

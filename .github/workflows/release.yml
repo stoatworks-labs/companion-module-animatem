@@ -20,11 +20,21 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # 22, matching ci.yml, package.json's `engines` and the manifest's
+          # node22 runtime. This said 20, which is below the floor the module
+          # declares it needs.
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
         run: npm ci
+
+      # `main` is dist/main.js and the manifest entrypoint is ../dist/main.js,
+      # so the TypeScript has to compile before companion-module-build has
+      # anything to bundle. This step was missing: the release went straight
+      # from `npm ci` to `npm run package`.
+      - name: Build
+        run: npm run build
 
       - name: Build module package
         run: npm run package

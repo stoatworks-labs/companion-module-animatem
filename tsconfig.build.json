@@ -1,10 +1,17 @@
 {
   "extends": "@companion-module/tools/tsconfig/node22/recommended-esm.json",
-  "include": ["src/**/*.ts"],
+  // src/about-field.js is hand-written JavaScript vendored from
+  // stoatworks-backend/about/companion (with about-field.d.ts beside it for its
+  // types). config.ts imports it, so it has to reach dist/ like everything
+  // else — with only src/**/*.ts included and no allowJs it never got emitted,
+  // and esbuild could not resolve dist/config.js's import of it at package time.
+  "include": ["src/**/*.ts", "src/**/*.js"],
   "exclude": ["node_modules/**", "src/**/*spec.ts"],
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    // Emit the vendored .js; the .d.ts supplies its types, so leave checkJs off.
+    "allowJs": true
   }
 }
