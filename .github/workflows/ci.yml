@@ -8,20 +8,23 @@ name: ci
 # typecheck catches a bump that changes @companion-module/base's types without
 # changing its behaviour, which no runtime test would notice.
 #
-# Two steps its siblings have are deliberately absent, both because they are
-# already red on main and gating every bump on a pre-existing failure would
-# block the very PRs this workflow exists to unblock:
+# Lint and package were left out when this workflow was written, because both
+# were red on main and gating every Dependabot bump on a pre-existing failure
+# would have blocked the very PRs the workflow exists to unblock. Both are
+# fixed now and both are checked here:
 #
-#   npm run lint     43 prettier/prettier findings, plus an n/no-missing-import
-#                    on the TS-style './about-field.js' specifier.
-#   npm run package  src/about-field.js is hand-written JavaScript with a .d.ts
-#                    beside it, and tsconfig.build.json includes only
-#                    src/**/*.ts — so it is never emitted to dist/ and esbuild
-#                    cannot resolve dist/config.js's import of it. release.yml
-#                    hits the same wall (and does not even build first), so
-#                    this module cannot currently be packaged from a clean
-#                    checkout. Tracked separately; add the step once it is
-#                    fixed, because packaging is what a release actually ships.
+#   npm run lint     The 43 prettier findings were all in the vendored About
+#                    block, which is tab-indented and not this repo's to
+#                    reformat — eslint.config.mjs and .prettierignore now leave
+#                    it to its master in stoatworks-backend. The
+#                    n/no-missing-import is disabled at the one import it is
+#                    wrong about, with the reason at the line.
+#   npm run package  src/about-field.js is hand-written JavaScript vendored
+#                    with a .d.ts beside it, and tsconfig.build.json included
+#                    only src/**/*.ts — so it never reached dist/ and esbuild
+#                    could not resolve dist/config.js's import of it. allowJs
+#                    plus src/**/*.js in the include now emits it. Packaging is
+#                    what a release actually ships, so it is worth a check.
 on:
   push:
     branches: [main]
@@ -47,10 +50,19 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Lint
+        run: npm run lint
+
       # `main` is dist/main.js, so the TypeScript has to compile before anything
-      # downstream can use it. This is also the step release.yml is missing.
+      # downstream can use it — including the packaging step below.
       - name: Build
         run: npm run build
 
       - name: Test
         run: npm test
+
+      # The .tgz is what a release ships, and it is built by esbuild bundling
+      # dist/ — a different resolver from tsc, with its own ways to fail. Only
+      # this step would have caught the missing about-field.js.
+      - name: Build module package
+        run: npm run package

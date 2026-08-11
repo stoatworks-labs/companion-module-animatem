@@ -1,0 +1,12 @@
+# The About block is vendored from stoatworks-backend/about/companion by
+# sync-about.py, byte-identical across all twelve companion modules. It is
+# tab-indented and this repo's prettier config is not, so `prettier -w .` would
+# rewrite a file we do not own and diverge it from the master — which the next
+# sync run would simply revert. Change it at the master instead.
+#
+# eslint.config.mjs ignores the same two files, so `npm run lint` agrees.
+src/about-field.js
+src/about-field.d.ts
+
+# Build output.
+dist/
