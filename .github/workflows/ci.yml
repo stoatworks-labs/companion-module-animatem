@@ -1,0 +1,48 @@
+name: ci
+
+# Until this existed the repo had no workflow with a `pull_request` trigger at
+# all — only a tag-driven release — so Dependabot bumps arrived with no status
+# check to gate a merge on and simply accumulated.
+#
+# This module is TypeScript, unlike its siblings, so the check has more to say:
+# typecheck catches a bump that changes @companion-module/base's types without
+# changing its behaviour, which no runtime test would notice.
+#
+# `npm run lint` is deliberately NOT a step. It already fails on main — 43
+# prettier/prettier findings plus an n/no-missing-import on the TS-style
+# './about-field.js' specifier — and wiring a pre-existing red into the gate
+# would block every Dependabot PR for reasons that have nothing to do with the
+# bump. Fix the lint separately, then add the step.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Deliberately a plain `npm ci` — no --legacy-peer-deps. A bump that only
+      # installs by ignoring the peer graph is exactly what this is here to catch.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      # Bundling is a separate failure mode from running: the module can pass its
+      # tests and still fail to package, which is what a release actually ships.
+      # Same command release.yml runs, so a red here means a red release.
+      - name: Build module package
+        run: npm run package
