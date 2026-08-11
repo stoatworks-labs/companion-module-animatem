@@ -41,8 +41,14 @@ jobs:
       - name: Test
         run: npm test
 
+      # `main` is dist/main.js, so the TypeScript has to be compiled before
+      # anything can bundle it. release.yml goes straight from `npm ci` to
+      # `npm run package` and therefore cannot work as written — this build step
+      # is what that workflow is missing, and it is tracked separately.
+      - name: Build
+        run: npm run build
+
       # Bundling is a separate failure mode from running: the module can pass its
       # tests and still fail to package, which is what a release actually ships.
-      # Same command release.yml runs, so a red here means a red release.
       - name: Build module package
         run: npm run package
