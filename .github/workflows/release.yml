@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Compile TypeScript
+        run: npm run build
+
       - name: Build module package
         run: npm run package
 
