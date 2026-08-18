@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "format": "prettier -w .",
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "build": "rimraf dist && tsc -p tsconfig.build.json && cp src/about-field.js src/about-field.d.ts dist/",
     "dev": "tsc -p tsconfig.build.json --watch",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
