@@ -14,14 +14,10 @@ name: ci
 #
 #   npm run lint     43 prettier/prettier findings, plus an n/no-missing-import
 #                    on the TS-style './about-field.js' specifier.
-#   npm run package  src/about-field.js is hand-written JavaScript with a .d.ts
-#                    beside it, and tsconfig.build.json includes only
-#                    src/**/*.ts — so it is never emitted to dist/ and esbuild
-#                    cannot resolve dist/config.js's import of it. release.yml
-#                    hits the same wall (and does not even build first), so
-#                    this module cannot currently be packaged from a clean
-#                    checkout. Tracked separately; add the step once it is
-#                    fixed, because packaging is what a release actually ships.
+# (`npm run package` used to be absent for the same reason — it could not resolve
+# dist/config.js's import of the hand-written src/about-field.js. It packages
+# cleanly now, as long as Build runs first, so it is back: packaging is what a
+# release actually ships, and it is the step that has actually broken.)
 on:
   push:
     branches: [main]
@@ -48,9 +44,29 @@ jobs:
         run: npm run typecheck
 
       # `main` is dist/main.js, so the TypeScript has to compile before anything
-      # downstream can use it. This is also the step release.yml is missing.
+      # downstream can use it. release.yml compiles first for the same reason.
       - name: Build
         run: npm run build
 
       - name: Test
         run: npm test
+
+      - name: Build module package
+        run: npm run package
+
+      # Packaging succeeding is not the same as the package being loadable. What
+      # Companion (and Burrow) look for is package.json in the archive's root
+      # directory, and release.yml once shipped an archive that had it a level
+      # deeper. Assert the shape here, where a PR can go red for it.
+      - name: Check the package is loadable
+        shell: bash
+        run: |
+          set -euo pipefail
+          f=$(ls -1 *.tgz 2>/dev/null | head -n 1 || true)
+          [ -n "$f" ] || { echo "::error::companion-module-build produced no .tgz"; exit 1; }
+          root=$(tar tzf "$f" | head -n 1 | cut -d/ -f1)
+          for want in "$root/package.json" "$root/companion/manifest.json"; do
+            tar tzf "$f" | grep -qx "$want" \
+              || { echo "::error::$f has no $want, so Companion would not load it"; exit 1; }
+          done
+          echo "$f: ok — root is $root/"
