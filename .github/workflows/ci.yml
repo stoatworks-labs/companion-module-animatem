@@ -8,16 +8,21 @@ name: ci
 # typecheck catches a bump that changes @companion-module/base's types without
 # changing its behaviour, which no runtime test would notice.
 #
-# Two steps its siblings have are deliberately absent, both because they are
-# already red on main and gating every bump on a pre-existing failure would
-# block the very PRs this workflow exists to unblock:
+# Two steps were once deliberately absent, both because they were already red on
+# main and gating every bump on a pre-existing failure would have blocked the
+# very PRs this workflow exists to unblock. Both are back:
 #
-#   npm run lint     43 prettier/prettier findings, plus an n/no-missing-import
-#                    on the TS-style './about-field.js' specifier.
-# (`npm run package` used to be absent for the same reason — it could not resolve
-# dist/config.js's import of the hand-written src/about-field.js. It packages
-# cleanly now, as long as Build runs first, so it is back: packaging is what a
-# release actually ships, and it is the step that has actually broken.)
+#   npm run package  could not resolve dist/config.js's import of the
+#                    hand-written src/about-field.js. It packages cleanly as
+#                    long as Build runs first, and packaging is what a release
+#                    actually ships — it is the step that has actually broken.
+#   npm run lint     had 43 prettier/prettier findings, since fixed, plus an
+#                    n/no-missing-import on the TS-style './about-field.js'
+#                    specifier, since fixed in eslint.config.mjs by telling the
+#                    resolver that a .js specifier may mean an actual .js file.
+#
+# Leaving lint out is how it stayed broken: main was green for months with a
+# failing `npm run lint`, because nothing here ran it.
 on:
   push:
     branches: [main]
@@ -42,6 +47,11 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      # eslint here is type-aware (parserOptions.project) and carries
+      # prettier/prettier, so this covers formatting too. It needs no build.
+      - name: Lint
+        run: npm run lint
 
       # `main` is dist/main.js, so the TypeScript has to compile before anything
       # downstream can use it. release.yml compiles first for the same reason.
