@@ -5,7 +5,7 @@
   "name": "animatem",
   "shortname": "animATEM",
   "description": "Control animATEM \u2014 cut, auto and fade-to-black per M/E, program/preview and aux source selection from live input names, SuperSource/DVE memory recall and animation, with program and preview tally.",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "license": "MIT",
   "repository": "git+https://github.com/stoatworks-labs/companion-module-animatem.git",
   "bugs": "https://github.com/stoatworks-labs/companion-module-animatem/issues",
