@@ -16,11 +16,11 @@ TypeScript, built against `@companion-module/base` v2.
 
 ## Download
 
-**[v1.0.3](https://github.com/stoatworks-labs/companion-module-animatem/releases/tag/v1.0.3)**
+**[v1.0.4](https://github.com/stoatworks-labs/companion-module-animatem/releases/tag/v1.0.4)**
 
 This release contains:
 
-- [`animatem-1.0.3.tgz`](https://github.com/stoatworks-labs/companion-module-animatem/releases/download/v1.0.3/animatem-1.0.3.tgz) — npm package, 24 KB
+- [`animatem-1.0.4.tgz`](https://github.com/stoatworks-labs/companion-module-animatem/releases/download/v1.0.4/animatem-1.0.4.tgz) — npm package, 24 KB
 - [`companion-module-animatem-pkg.tgz`](https://github.com/stoatworks-labs/companion-module-animatem/releases/latest/download/companion-module-animatem-pkg.tgz) — npm package, 24 KB
 
 All builds, checksums and release notes: [github.com/stoatworks-labs/companion-module-animatem/releases](https://github.com/stoatworks-labs/companion-module-animatem/releases).
