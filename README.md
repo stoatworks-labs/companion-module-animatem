@@ -102,8 +102,11 @@ npm run typecheck
 npm test
 ```
 
-It's not in the official Companion module store, so install it through
-**Settings → Developer modules path**. **Run `npm run build` first**: the
+It's not in the official Companion module store. The quick way is to download
+`companion-module-animatem-pkg.tgz` from the
+[releases page](https://github.com/stoatworks-labs/companion-module-animatem/releases), which is
+already built, and import it with Companion's **Modules → Import module package**. Or install a
+checkout through **Settings → Developer modules path**. **Run `npm run build` first**: the
 manifest's entrypoint is `../dist/main.js`, and a checkout with only the source
 in it won't load.
 
