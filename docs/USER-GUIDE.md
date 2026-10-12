@@ -1,17 +1,17 @@
 # Companion — animATEM user guide
 
 This module drives [animATEM](https://github.com/stoatworks-labs/animATEM) from a Stream Deck, or
-any other Bitfocus Companion surface: **cut, auto and fade to black per M/E, program, preview and
-aux selection by input name, and SuperSource/DVE memory recall, with tally.**
+any other Bitfocus Companion surface: cut, auto and fade to black per M/E, program, preview and
+aux selection by input name, and SuperSource/DVE memory recall, with tally.
 
-The [README](../README.md) covers installing the module. This is how to build a surface with it,
-and what to be careful with.
+The [README](../README.md) covers installing the module. This guide is about building a surface
+with it, and what to be careful of.
 
-> **Before you rely on this:** this module has **no automated tests**. Its protocol file is a
-> hand-kept mirror of animATEM's own — the two are separate packages and cannot import each other
-> — so a change to the control server's message shapes breaks this module **silently**: a button
-> stops working mid-show with no error anywhere obvious. Keep the app and the module in step, and
-> re-test a page after upgrading either.
+> **Before you rely on this:** this module has **no automated tests**. Its protocol file is a copy
+> of animATEM's own, kept up to date by hand (they're separate packages and can't import each
+> other), so a change to the control server's message shapes breaks this module **silently**: a
+> button stops working mid-show with no error anywhere obvious. Keep the app and the module in
+> step, and re-test a page after upgrading either one.
 >
 > This module was built with AI assistance, directed and reviewed by a human author.
 
@@ -19,32 +19,32 @@ and what to be careful with.
 
 ## What a press actually does
 
-**This puts things on air.** There is no confirmation step and no undo.
+**This puts things on air.** There's no confirmation step and no undo.
 
-And there is a second thing to understand before you build anything, because every design
-decision below follows from it: **animATEM's control server never replies.** No result, no error
-frame. It drops malformed messages silently, and it catches a failing command and logs it *at the
-app* rather than propagating it.
+There's a second thing to understand before you build anything, because every design decision
+below follows from it: **animATEM's control server never replies.** You get no result and no error
+frame. It drops malformed messages without a word, and when a command fails it catches it and logs
+it *at the app* rather than passing it back.
 
-So **a command sent while the switcher is disconnected looks exactly like one that worked.**
+So **a command sent while the switcher's disconnected looks just like one that worked.**
 
-Two consequences you will meet:
+You'll run into that in two places:
 
 - **No button here lights up from its own press.** Every feedback reads the app's snapshot
-  instead, because "I sent it" is not evidence that anything happened.
-- **Take and aux-follow refuse rather than guess.** When there is no snapshot, `Take preview to
+  instead, because "I sent it" doesn't tell you anything happened.
+- **Take and aux-follow refuse rather than guess.** When there's no snapshot, `Take preview to
   program` and `Point an aux at program` do nothing and say so, rather than acting on a guess
-  about what is on preview. Guessing wrong puts the wrong thing on air.
+  about what's on preview. Guess wrong and the wrong thing goes to air.
 
 ---
 
 ## Connecting
 
-animATEM runs its control server on `127.0.0.1:51234` whenever the app is open. There is nothing
-to configure on the app side.
+animATEM runs its control server on `127.0.0.1:51234` whenever the app's open. There's nothing to
+set up on the app side.
 
-**That server has no authentication.** It is safe only because it binds loopback — anything that
-can reach that port can put something on air. Companion must therefore run on the same machine as
+**That server has no authentication.** It's only safe because it binds to loopback: anything that
+can reach that port can put something on air. So Companion has to run on the same machine as
 animATEM.
 
 ---
@@ -56,38 +56,39 @@ animATEM.
 | **Connected to animATEM** | Can Companion reach the app? |
 | **animATEM's ATEM connection is up** | Can the app reach the switcher? |
 
-These are two different questions and they fail separately. The second goes dark on its own while
-a switcher reboots, with the first still green — and **while it is dark, every tally on the surface
-is stale rather than false.** It is showing the last thing it knew.
+They're two different questions and they fail separately. The second goes dark on its own while a
+switcher reboots, with the first still green, and **while it's dark, every tally on the surface is
+stale rather than false.** It's showing the last thing it knew.
 
-Conflating them means restarting the wrong thing at the worst possible moment. Put both on every
+Mix them up and you'll restart the wrong thing at the worst possible moment. Put both on every
 page that has transition buttons.
 
 ---
 
 ## Inputs are picked by name
 
-An ATEM's sources are numbered awkwardly — 1..N plus black, bars, media players and SuperSource at
-3010 and up — and the numbers are neither contiguous nor memorable. animATEM already sends the
-input list with short and long names, so **every input dropdown is populated from it**, and every
-generated bus preset is labelled with the switcher's own short name, the one the multiview shows.
+An ATEM numbers its sources in a way that must have made sense to someone once: 1..N, then black,
+bars, media players and SuperSource from 3010 up. The numbers aren't contiguous and nobody
+remembers them. animATEM already sends the input list with short and long names, so **every input
+dropdown is filled from that**, and every generated bus preset is labelled with the switcher's own
+short name, the one the multiview shows.
 
-The cost is honest and worth planning around: **bus presets only exist once a switcher has
-connected.** Before then the module does not know what inputs there are. The transition, memory
-and status sections work regardless.
+There's a catch worth planning around: **bus presets only exist once a switcher has connected.**
+Before that the module doesn't know what inputs there are. The transition, memory and status
+sections work either way.
 
-**Every dropdown also accepts a typed number**, so a button built while animATEM was offline still
-works. Use that if you are building a page in advance on a laptop.
+**Every dropdown also takes a typed number**, so a button built while animATEM was offline still
+works. That's the way to do it if you're building a page in advance on a laptop.
 
 ---
 
 ## Auto goes amber mid-transition
 
-During an auto, **both buses are on air**. A plain program tally is therefore telling only half
-the story for the length of the transition, which is exactly when someone is looking at it.
+During an auto, **both buses are on air**. So for the length of the transition a plain program
+tally is only telling you half the story, and that's just when someone's looking at it.
 
-The generated Auto and PGM/PVW display buttons show that state in **amber**. Keep it — a
-two-colour tally during a mix is a tally that lies for a second and a half.
+The generated Auto and PGM/PVW display buttons show that state in **amber**. Keep it. A two-colour
+tally during a mix is wrong for a second and a half every time.
 
 ---
 
@@ -96,19 +97,19 @@ two-colour tally during a mix is a tally that lies for a second and a half.
 animATEM has no follow mode. **Point an aux at what is on program** reads program *once* and sets
 the aux.
 
-To make it stick, drive it from a repeating trigger. If you expect it to behave like a real aux
-follow and it does not, this is why.
+To make it stick, drive it from a repeating trigger. If you were expecting it to behave like a
+proper aux follow and it doesn't, that's why.
 
 ---
 
 ## Memories can go stale
 
-`memories` is the one message animATEM does **not** broadcast on change. It arrives on connect,
-and when the app explicitly asks for it.
+`memories` is the one message animATEM does **not** broadcast when it changes. It arrives on
+connect, and when the app explicitly asks for it.
 
-The module rebuilds its memory dropdowns and presets whenever one arrives — but a memory added in
-the app without that call **will not appear until the module reconnects**. If a new memory is
-missing from the dropdown, disable and re-enable the connection.
+The module rebuilds its memory dropdowns and presets whenever one arrives, but a memory added in
+the app without that call **won't appear until the module reconnects**. If a new memory is missing
+from the dropdown, disable and re-enable the connection.
 
 ---
 
@@ -116,10 +117,10 @@ missing from the dropdown, disable and re-enable the connection.
 
 1. **Both connection lights, on every page with transitions.** See above.
 2. **Amber for mid-transition**, from the generated presets.
-3. **Program and preview rows from the generated bus presets**, once the switcher has connected —
-   they carry the switcher's own short names, so the surface matches the multiview.
-4. **Do not build a page that assumes a press worked.** Nothing is acknowledged; the feedbacks
-   read state, and state is what you should be looking at.
+3. **Program and preview rows from the generated bus presets**, once the switcher has connected.
+   They carry the switcher's own short names, so the surface matches the multiview.
+4. **Don't build a page that assumes a press worked.** Nothing is acknowledged; the feedbacks read
+   state, and state is what you should be looking at.
 
 ---
 
@@ -138,5 +139,5 @@ missing from the dropdown, disable and re-enable the connection.
 
 ## See also
 
-- [README](../README.md) — installing, and the full action/feedback/variable list
-- [`companion/HELP.md`](../companion/HELP.md) — the same material, in Companion's help panel
+- [README](../README.md): installing, and the full list of actions, feedbacks and variables
+- [`companion/HELP.md`](../companion/HELP.md): the same material, in Companion's help panel
