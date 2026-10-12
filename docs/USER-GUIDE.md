@@ -7,8 +7,10 @@ aux selection by input name, and SuperSource/DVE memory recall, with tally.
 The [README](../README.md) covers installing the module. This guide is about building a surface
 with it, and what to be careful of.
 
-> **Before you rely on this:** this module has **no automated tests**. Its protocol file is a copy
-> of animATEM's own, kept up to date by hand (they're separate packages and can't import each
+> **Before you rely on this:** the module's automated tests are eight vitest cases for its
+> WebSocket client (`src/wsClient.spec.ts`: connecting, message dispatch, sending and
+> reconnecting, against a mock socket), and **none of them checks its messages against animATEM's**.
+> Its protocol file is a copy of animATEM's own, kept up to date by hand (they're separate packages and can't import each
 > other), so a change to the control server's message shapes breaks this module **silently**: a
 > button stops working mid-show with no error anywhere obvious. Keep the app and the module in
 > step, and re-test a page after upgrading either one.
