@@ -38,5 +38,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stoatworks-labs/companion-module-animatem.git"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1"
   }
 }
