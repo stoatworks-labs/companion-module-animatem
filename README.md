@@ -9,6 +9,8 @@ A [Bitfocus Companion](https://bitfocus.io/companion) module for
 per M/E, program/preview and aux selection by input name, and SuperSource/DVE
 memory recall, with program and preview tally.
 
+The [project page](https://stoatworks-labs.com/software/companion-animatem/) has the downloads and the [user guide](https://stoatworks-labs.com/software/companion-animatem/guide/).
+
 It's written in TypeScript, against `@companion-module/base` v2.
 
 <!-- downloads:start -->
