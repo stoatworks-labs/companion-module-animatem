@@ -59,7 +59,7 @@ const wsModule = (await import('ws')) as unknown as {
 }
 const MockWebSocket = wsModule.default
 
-const { AnimatemClient } = await import('./wsClient.js')
+const { AnimatemClient, wsUrl } = await import('./wsClient.js')
 
 beforeEach(() => {
   MockWebSocket.instances.length = 0
@@ -80,6 +80,15 @@ describe('AnimatemClient', () => {
 
     MockWebSocket.instances[0].emit('open')
     expect(onOpen).toHaveBeenCalledOnce()
+  })
+
+  // The host field takes any text since Regex.HOSTNAME went, so an IPv6
+  // address has to reach the URL with its brackets added.
+  it('brackets an IPv6 host in the URL', () => {
+    new AnimatemClient('::1', 51234, {}).start()
+    expect(MockWebSocket.instances[0].url).toBe('ws://[::1]:51234')
+    expect(wsUrl('[fd00::5]', 51234)).toBe('ws://[fd00::5]:51234')
+    expect(wsUrl(' atem-pc.local ', 51234)).toBe('ws://atem-pc.local:51234')
   })
 
   it('dispatches status/snapshot/memories messages to the matching callback', () => {

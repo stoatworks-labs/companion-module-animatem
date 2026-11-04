@@ -11,6 +11,14 @@ export interface WsClientEvents {
 
 const RECONNECT_DELAY_MS = 3000
 
+/** The host field takes any text, so an IPv6 address needs its brackets added
+ *  before it can sit in a URL. */
+export function wsUrl(host: string, port: number): string {
+  const trimmed = host.trim()
+  const bracketed = trimmed.includes(':') && !trimmed.startsWith('[') ? `[${trimmed}]` : trimmed
+  return `ws://${bracketed}:${port}`
+}
+
 /** Reconnecting WebSocket client for animATEM's local control server. */
 export class AnimatemClient {
   private socket: WebSocket | null = null
@@ -49,7 +57,7 @@ export class AnimatemClient {
   }
 
   private connect(): void {
-    const socket = new WebSocket(`ws://${this.host}:${this.port}`)
+    const socket = new WebSocket(wsUrl(this.host, this.port))
     this.socket = socket
 
     socket.on('open', () => this.events.onOpen?.())
